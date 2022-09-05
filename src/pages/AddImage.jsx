@@ -28,11 +28,15 @@ export default function Edit() {
       const data = new FormData();
       data.append("name", event.target.name.value)
       data.append("description", event.target.description.value)
-      data.append('image',images,images.name);
+      try{
+        data.append('image',images,images.name);
+      }
+      catch{
+        alert("Please add an image")
+        return
+      }
       
       updater(url, data)
-      
-      
     }
 
   return (
@@ -62,6 +66,7 @@ export default function Edit() {
                   required
                   fullWidth
                   id="name"
+                  type="text"
                   label="Enter Name of the Image"
                   autoFocus
                 />

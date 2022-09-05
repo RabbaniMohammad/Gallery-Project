@@ -3,9 +3,7 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -21,12 +19,12 @@ import ImageContext from '../context/ImageContext';
 
 const theme = createTheme();
 
+const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
+
 export default function SignInSide() {
   const {pk} = useParams();
-
-  // when page is refreshed the useContext is not getting called
+  let [add_p, setAdd_p] = useState(true)
   const {cards, updater} = useContext(ImageContext)
-  console.log("calling but this is the result",cards)
 
 
   const [images,setImage]=useState();
@@ -40,10 +38,9 @@ export default function SignInSide() {
 
     const onImage=(e)=>{
         setImage(e.target.files[0]);
+        setAdd_p(false)
     }
-    
-    // console.log("card changing..?", cards)
-    // when the state changes it will call the cards and useeffect still runs and data again will updated in the input filed that's it is not working...
+
     useEffect(()=>{
         cards.map(ele=>{
             if(ele.id == pk){
@@ -65,13 +62,20 @@ export default function SignInSide() {
     const data = new FormData();
     data.append("name", event.target.name.value)
     data.append("description", event.target.description.value)
-    data.append('image',images,images.name);
-
+    try{
+      data.append('image',images,images.name);
+      data.append('image_name', images.name)
+    }
+    catch{
+      data.append("update","yes")
+      if(!event.target.check.checked){
+        alert("You are not providing any image. Your older image will be deleted. Please check the box.")
+        return
+      }
+    }
 
     updater(url, data)
   };
-
-
   return (
     <ThemeProvider theme={theme}>
       <Grid container component="main" sx={{ height: '100vh' }}>
@@ -134,11 +138,13 @@ export default function SignInSide() {
                 id="email"
                 type="file"
                 name="image"
-                value={data.value}
                 onChange={onImage}
                 autoComplete="name"
                 autoFocus
               />
+              {add_p ?
+                <p> <Checkbox {...label} value="1" name="check" />Do you want to delete your older image</p>:null
+              }
               <Button
                 type="submit"
                 fullWidth

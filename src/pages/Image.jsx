@@ -8,6 +8,7 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { CardActionArea } from '@mui/material';
+import image from "../components/utils"
 
 
 
@@ -33,6 +34,10 @@ export default function Image() {
   })
   },[cards])
 
+  function update(e){
+    e.target.src = image
+  }
+
   return (
     <>
     <Box display="flex" justifyContent="center"
@@ -43,7 +48,8 @@ export default function Image() {
           component="img"
           // height="500"
           // width="500"
-          image={img.image}
+          image={`http://127.0.0.1:8000/static${img.image}`}
+          onError={update}
           alt="green iguana"
         />
         <CardContent>
@@ -60,3 +66,5 @@ export default function Image() {
     </>
   );
 }
+
+

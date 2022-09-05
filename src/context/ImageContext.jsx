@@ -1,11 +1,9 @@
 import { createContext, useState, useEffect } from "react";
 import {useNavigate} from 'react-router-dom';
 
+const ImageContext = createContext();
 
-const ImageContext = createContext() 
-
-export default ImageContext; 
-
+export default ImageContext;
 
 export const ImageProvider = ({children}) =>{
     const navigate = useNavigate()
@@ -23,14 +21,19 @@ export const ImageProvider = ({children}) =>{
     }
 
     const deleteImage = async (id) =>{
-        await fetch(`http://127.0.0.1:8000/deleteimage/${id}`)
-        await setUpdate([])
-        await alert("Image has been deleted!..")
+        const response = await fetch(`http://127.0.0.1:8000/deleteimage/${id}`)
+        // const data = await response.json()
+        // if(data.message == "invalid"){
+        //   await setUpdate([])
+        //   await alert("Please add an image")
+        //   return 
+        // }
+        await alert("Image has been deleted..")
+        setUpdate([])
 
     }
 
     function updater(url, data){
-        console.log("this is the url",url)
     fetch(url,
       {
         method:'POST',
@@ -41,9 +44,12 @@ export const ImageProvider = ({children}) =>{
           setUpdate([])
           navigate("/")
         }
+        else{
+          alert("Please add an image..")
+        }
       })
     }
-    console.log("calling", img)
+
     let contextData = { 
         cards:img,
         deleteImage:deleteImage,
